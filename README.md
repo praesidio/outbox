@@ -1,2 +1,2 @@
 # outbox
-Implementation of Outbox pattern in for JVM languages
+Implementation of Outbox pattern for JVM languages
