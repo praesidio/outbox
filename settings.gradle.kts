@@ -8,3 +8,5 @@
  */
 
 rootProject.name = "outbox"
+
+include("outbox-core")
