@@ -3,6 +3,6 @@ package io.praesidio.outbox.values;
 import lombok.Value;
 
 @Value(staticConstructor = "of")
-public class PraesidioMessageMetadata {
+public class MessageMetadata {
     String value;
 }

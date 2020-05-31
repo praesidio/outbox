@@ -6,7 +6,7 @@ import lombok.Value;
 import java.util.UUID;
 
 @Value(staticConstructor = "of")
-public class PraesidioMessageId {
+public class MessageId {
     @NonNull
     UUID value;
 }

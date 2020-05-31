@@ -1,7 +1,7 @@
 package io.praesidio.outbox.stubs;
 
-import io.praesidio.outbox.values.PraesidioMessageType;
+import io.praesidio.outbox.values.MessageType;
 
 public class StubImplementationConstants {
-    public static final PraesidioMessageType PRAESIDIO_MESSAGE_TYPE = PraesidioMessageType.of("STUB");
+    public static final MessageType MESSAGE_TYPE = MessageType.of("STUB");
 }

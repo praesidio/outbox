@@ -1,9 +1,9 @@
 package io.praesidio.outbox;
 
 import io.praesidio.outbox.stubs.StubImplementationConstants;
-import io.praesidio.outbox.stubs.StubPraesidioCommandRepository;
-import io.praesidio.outbox.stubs.StubPraesidioMessageSerializer;
-import io.praesidio.outbox.stubs.StubPraesidioSendMessageCommand;
+import io.praesidio.outbox.stubs.StubMessageRepository;
+import io.praesidio.outbox.stubs.StubMessageSerializer;
+import io.praesidio.outbox.stubs.StubSendMessageCommand;
 import org.junit.jupiter.api.Test;
 
 import java.util.Set;
@@ -11,12 +11,12 @@ import java.util.Set;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-public class PraesidioOutboxSaveTest {
+public class OutboxSaveTest {
 
-    private final StubPraesidioCommandRepository praesidioMessageRepository = new StubPraesidioCommandRepository();
-    private final PraesidioOutbox subject = new PraesidioOutbox(
-            praesidioMessageRepository,
-            Set.of(new StubPraesidioMessageSerializer())
+    private final StubMessageRepository messageRepository = new StubMessageRepository();
+    private final Outbox subject = new Outbox(
+            messageRepository,
+            Set.of(new StubMessageSerializer())
     );
 
     @Test
@@ -24,7 +24,7 @@ public class PraesidioOutboxSaveTest {
         // given
         String content = "test content";
         String metadata = "test metadata";
-        PraesidioSendMessageCommand command = StubPraesidioSendMessageCommand
+        SendMessageCommand command = StubSendMessageCommand
                 .builder()
                 .content(content)
                 .metadata(metadata)
@@ -34,10 +34,10 @@ public class PraesidioOutboxSaveTest {
         subject.send(command);
 
         // then
-        assertEquals(1, praesidioMessageRepository.getAll().size());
-        PraesidioMessage message = praesidioMessageRepository.getAll().iterator().next();
+        assertEquals(1, messageRepository.getAll().size());
+        Message message = messageRepository.getAll().iterator().next();
         assertNotNull(message.getId().getValue());
-        assertEquals(StubImplementationConstants.PRAESIDIO_MESSAGE_TYPE, message.getType());
+        assertEquals(StubImplementationConstants.MESSAGE_TYPE, message.getType());
         assertEquals(metadata, message.getMetadata().getValue());
         assertEquals(content, message.getContent().getValue());
     }
