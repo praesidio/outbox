@@ -6,7 +6,7 @@ import io.praesidio.outbox.stubs.StubMessageSerializer;
 import io.praesidio.outbox.stubs.StubSendMessageCommand;
 import org.junit.jupiter.api.Test;
 
-import java.util.Set;
+import java.util.Collections;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -16,7 +16,7 @@ public class OutboxSaveTest {
     private final StubMessageRepository messageRepository = new StubMessageRepository();
     private final Outbox subject = new Outbox(
             messageRepository,
-            Set.of(new StubMessageSerializer())
+            Collections.singleton(new StubMessageSerializer())
     );
 
     @Test
