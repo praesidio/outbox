@@ -9,7 +9,7 @@ public interface MessageRepository {
 
     void save(Message message);
 
-    Optional<Message> findMessage(MessageId id);
-
     List<Message> findMessagesToRelay();
+
+    void markAsSent(MessageId messageId);
 }

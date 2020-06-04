@@ -1,14 +1,17 @@
 package io.praesidio.outbox.stubs;
 
 import io.praesidio.outbox.Message;
-import io.praesidio.outbox.values.MessageId;
 import io.praesidio.outbox.MessageRepository;
+import io.praesidio.outbox.values.MessageId;
+import lombok.Getter;
 
 import java.util.*;
 
 public class StubMessageRepository implements MessageRepository {
 
     private final Map<MessageId, Message> messages = new HashMap<>();
+    @Getter
+    private final Set<Message> sentMessages = new HashSet<>();
 
     @Override
     public void save(Message message) {
@@ -16,13 +19,18 @@ public class StubMessageRepository implements MessageRepository {
     }
 
     @Override
-    public Optional<Message> findMessage(MessageId id) {
-        return Optional.ofNullable(messages.get(id));
+    public List<Message> findMessagesToRelay() {
+        return new ArrayList<>(messages.values());
     }
 
     @Override
-    public List<Message> findMessagesToRelay() {
-        throw new RuntimeException("Not implemented!");
+    public void markAsSent(MessageId messageId) {
+        Message message = messages
+                .values()
+                .stream()
+                .filter(m -> messageId.equals(m.getId())).findFirst()
+                .orElseThrow(() -> new MessageNotFoundException(messageId));
+        sentMessages.add(message);
     }
 
     public Collection<Message> getAll() {

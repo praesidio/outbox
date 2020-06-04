@@ -26,6 +26,15 @@ public class StubMessageSerializer implements MessageSerializer {
     }
 
     @Override
+    public SendMessageCommand convert(Message message) {
+        return StubSendMessageCommand
+                .builder()
+                .content(message.getContent().getValue())
+                .metadata(message.getMetadata().getValue())
+                .build();
+    }
+
+    @Override
     public MessageType getType() {
         return MESSAGE_TYPE;
     }
