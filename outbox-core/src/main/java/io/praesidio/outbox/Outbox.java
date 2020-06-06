@@ -24,7 +24,7 @@ public class Outbox {
         Message message = Optional.ofNullable(serializers.get(type))
                                   .map(s -> s.convert(command))
                                   .orElseThrow(() -> new CannotFindMessageSerializer(type));
-        // FIXME make sure this is always invoked inside a transaction
+        // FIXME #10 make sure this is always invoked inside a transaction
         messageRepository.save(message);
     }
 }

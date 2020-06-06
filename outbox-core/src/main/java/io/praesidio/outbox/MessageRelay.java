@@ -2,9 +2,9 @@ package io.praesidio.outbox;
 
 import io.praesidio.outbox.values.MessageType;
 
+import java.util.Collection;
 import java.util.Map;
 import java.util.Optional;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 public class MessageRelay {
@@ -15,8 +15,8 @@ public class MessageRelay {
 
     public MessageRelay(
             MessageRepository messageRepository,
-            Set<MessageRelayProvider> messageRelayProviders,
-            Set<MessageSerializer> messageSerializers
+            Collection<MessageRelayProvider> messageRelayProviders,
+            Collection<MessageSerializer> messageSerializers
     ) {
         this.messageRepository = messageRepository;
         this.messageRelayProviders = messageRelayProviders.stream().collect(Collectors.toMap(MessageRelayProvider::getType, s -> s));
@@ -28,14 +28,20 @@ public class MessageRelay {
     }
 
     private void relay(Message message) {
-        MessageRelayProvider messageRelayProvider =
-                Optional.ofNullable(messageRelayProviders.get(message.getType()))
-                        .orElseThrow(() -> new CannotFindMessageRelayProvider(message.getType()));
-        MessageSerializer messageSerializer =
-                Optional.ofNullable(messageSerializers.get(message.getType()))
-                        .orElseThrow(() -> new CannotFindMessageSerializer(message.getType()));
+        MessageRelayProvider messageRelayProvider = getMessageRelayProvider(message);
+        MessageSerializer messageSerializer = getMessageSerializer(message);
         messageRelayProvider.relay(messageSerializer.convert(message));
-        // FIXME I don't think this needs to be in a transaction?
+        // FIXME #10 should this happen in transaction?
         messageRepository.markAsSent(message.getId());
+    }
+
+    private MessageSerializer getMessageSerializer(Message message) {
+        return Optional.ofNullable(messageSerializers.get(message.getType()))
+                .orElseThrow(() -> new CannotFindMessageSerializer(message.getType()));
+    }
+
+    private MessageRelayProvider getMessageRelayProvider(Message message) {
+        return Optional.ofNullable(messageRelayProviders.get(message.getType()))
+                .orElseThrow(() -> new CannotFindMessageRelayProvider(message.getType()));
     }
 }
