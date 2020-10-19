@@ -29,8 +29,7 @@ public class MessageRelay {
 
     private void relay(Message message) {
         MessageRelayProvider messageRelayProvider = getMessageRelayProvider(message);
-        MessageSerializer messageSerializer = getMessageSerializer(message);
-        messageRelayProvider.relay(messageSerializer.convert(message));
+        messageRelayProvider.relay(message);
         // FIXME #10 should this happen in transaction?
         messageRepository.markAsSent(message.getId());
     }

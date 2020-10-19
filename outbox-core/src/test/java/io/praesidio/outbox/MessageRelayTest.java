@@ -4,9 +4,13 @@ import io.praesidio.outbox.stubs.StubMessageRelayProvider;
 import io.praesidio.outbox.stubs.StubMessageRepository;
 import io.praesidio.outbox.stubs.StubMessageSerializer;
 import io.praesidio.outbox.stubs.StubSendMessageCommand;
+import io.praesidio.outbox.values.MessageContent;
+import io.praesidio.outbox.values.MessageId;
+import io.praesidio.outbox.values.MessageMetadata;
 import org.junit.jupiter.api.Test;
 
 import java.util.Collections;
+import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -28,14 +32,15 @@ public class MessageRelayTest {
                 .content("Test content")
                 .metadata("Test metadata")
                 .build();
-        stubMessageRepository.save(stubMessageSerializer.convert(command));
+        Message serializedMessage = stubMessageSerializer.serialize(command);
+        stubMessageRepository.save(serializedMessage);
 
         // when
         messageRelay.relayMessages();
 
         // then
-        assertEquals(1, stubMessageRelayProvider.getCommands().size());
-        assertEquals(command, stubMessageRelayProvider.getCommands().iterator().next());
+        assertEquals(1, stubMessageRelayProvider.getMessages().size());
+        assertEquals(serializedMessage, stubMessageRelayProvider.getMessages().iterator().next());
     }
 
     @Test
@@ -45,7 +50,7 @@ public class MessageRelayTest {
                 .content("Test content")
                 .metadata("Test metadata")
                 .build();
-        stubMessageRepository.save(stubMessageSerializer.convert(command));
+        stubMessageRepository.save(stubMessageSerializer.serialize(command));
 
         // when
         messageRelay.relayMessages();

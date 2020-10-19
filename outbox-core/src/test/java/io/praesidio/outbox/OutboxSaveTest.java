@@ -11,16 +11,16 @@ import java.util.Collections;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-public class OutboxSaveTest {
+class OutboxSaveTest {
 
-    private final StubMessageRepository messageRepository = new StubMessageRepository();
+    private final StubMessageRepository repository = new StubMessageRepository();
     private final Outbox subject = new Outbox(
-            messageRepository,
+            repository,
             Collections.singleton(new StubMessageSerializer())
     );
 
     @Test
-    public void whenMessageIsSentViaOutboxThenItIsSavedInTheRepository() {
+    void whenMessageIsSentViaOutboxThenItIsSavedInTheRepository() {
         // given
         String content = "test content";
         String metadata = "test metadata";
@@ -34,8 +34,8 @@ public class OutboxSaveTest {
         subject.send(command);
 
         // then
-        assertEquals(1, messageRepository.getAll().size());
-        Message message = messageRepository.getAll().iterator().next();
+        assertEquals(1, repository.getAll().size());
+        Message message = repository.getAll().iterator().next();
         assertNotNull(message.getId().getValue());
         assertEquals(StubImplementationConstants.MESSAGE_TYPE, message.getType());
         assertEquals(metadata, message.getMetadata().getValue());
