@@ -3,6 +3,7 @@ package io.praesidio.outbox;
 import io.praesidio.outbox.stubs.StubImplementationConstants;
 import io.praesidio.outbox.stubs.StubMessageSerializer;
 import io.praesidio.outbox.stubs.StubSendMessageCommand;
+import io.praesidio.outbox.util.Sets;
 import io.praesidio.outbox.values.MessageContent;
 import io.praesidio.outbox.values.MessageMetadata;
 import io.praesidio.outbox.values.MessageType;
@@ -20,13 +21,13 @@ class MessageFactoryTest {
     private static final MessageMetadata MESSAGE_METADATA = MessageMetadata.of(METADATA);
     public static final String TEST_TYPE = "TEST_TYPE";
 
-    private final Set<MessageSerializer> serializers = Set.of(new StubMessageSerializer());
+    private final Set<MessageSerializer> serializers = Sets.of(new StubMessageSerializer());
     private final MessageFactory messageFactory = new MessageFactory(serializers);
 
     @Test
     void whenDuplicatedSerializersAreRegisteredThenAnExceptionIsThrown() {
         // given
-        Set<MessageSerializer> serializers = Set.of(new StubMessageSerializer(), new StubMessageSerializer());
+        Set<MessageSerializer> serializers = Sets.of(new StubMessageSerializer(), new StubMessageSerializer());
 
         // expected
         assertThrows(SerializerDuplicationException.class, () -> new MessageFactory(serializers));
@@ -35,7 +36,7 @@ class MessageFactoryTest {
     @Test
     void whenRegisteredSerializerReturnsNullTypeThenAnExceptionIsThrown() {
         // given
-        Set<MessageSerializer> serializers = Set.of(messageSerializerWithNullMessageType());
+        Set<MessageSerializer> serializers = Sets.of(messageSerializerWithNullMessageType());
 
         // expected
         assertThrows(NullMessageTypeException.class, () -> new MessageFactory(serializers));
@@ -56,7 +57,7 @@ class MessageFactoryTest {
         SendMessageCommand command = () -> MessageType.of(TEST_TYPE);
 
         // and
-        MessageFactory messageFactory = new MessageFactory(Set.of(messageSerializerWithNullSerializeMethod()));
+        MessageFactory messageFactory = new MessageFactory(Sets.of(messageSerializerWithNullSerializeMethod()));
 
         // expected
         assertThrows(NullSerializedMessageException.class, () -> messageFactory.create(command));
