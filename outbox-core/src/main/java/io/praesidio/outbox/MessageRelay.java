@@ -5,7 +5,11 @@ import io.praesidio.outbox.values.MessageType;
 import java.util.Collection;
 import java.util.Map;
 import java.util.Optional;
+import java.util.function.Function;
 import java.util.stream.Collectors;
+
+import static java.util.function.Function.identity;
+import static java.util.stream.Collectors.toMap;
 
 public class MessageRelay {
 
@@ -19,8 +23,8 @@ public class MessageRelay {
             Collection<MessageSerializer> messageSerializers
     ) {
         this.messageRepository = messageRepository;
-        this.messageRelayProviders = messageRelayProviders.stream().collect(Collectors.toMap(MessageRelayProvider::getType, s -> s));
-        this.messageSerializers = messageSerializers.stream().collect(Collectors.toMap(MessageSerializer::getType, s -> s));
+        this.messageRelayProviders = messageRelayProviders.stream().collect(toMap(MessageRelayProvider::getType, identity()));
+        this.messageSerializers = messageSerializers.stream().collect(toMap(MessageSerializer::getType, identity()));
     }
 
     public void relayMessages() {

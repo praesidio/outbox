@@ -4,15 +4,13 @@ import io.praesidio.outbox.stubs.StubMessageRelayProvider;
 import io.praesidio.outbox.stubs.StubMessageRepository;
 import io.praesidio.outbox.stubs.StubMessageSerializer;
 import io.praesidio.outbox.stubs.StubSendMessageCommand;
-import io.praesidio.outbox.values.MessageContent;
-import io.praesidio.outbox.values.MessageId;
-import io.praesidio.outbox.values.MessageMetadata;
 import org.junit.jupiter.api.Test;
 
+import java.util.Arrays;
 import java.util.Collections;
-import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class MessageRelayTest {
 
@@ -24,6 +22,30 @@ public class MessageRelayTest {
             Collections.singleton(stubMessageRelayProvider),
             Collections.singleton(stubMessageSerializer)
     );
+
+    @Test
+    public void whenDuplicatedSerializersAreRegisteredThenAnExceptionIsThrown() {
+        // expected
+        assertThrows(IllegalStateException.class,
+                () -> new MessageRelay(
+                        stubMessageRepository,
+                        Collections.singleton(stubMessageRelayProvider),
+                        Arrays.asList(stubMessageSerializer, stubMessageSerializer)
+                )
+        );
+    }
+
+    @Test
+    public void whenDuplicatedMessageRelayProvidersAreRegisteredThenAnExceptionIsThrown() {
+        // expected
+        assertThrows(IllegalStateException.class,
+                () -> new MessageRelay(
+                        stubMessageRepository,
+                        Arrays.asList(stubMessageRelayProvider, stubMessageRelayProvider),
+                        Collections.singleton(stubMessageSerializer)
+                )
+        );
+    }
 
     @Test
     public void whenMessageRelayIsInvokedThenItUsesProviderToSendTheMessages() {
