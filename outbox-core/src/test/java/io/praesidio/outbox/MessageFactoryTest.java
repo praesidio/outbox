@@ -18,12 +18,13 @@ class MessageFactoryTest {
     private static final MessageContent MESSAGE_CONTENT = MessageContent.of(CONTENT);
     private static final String METADATA = "{headers: [{key: 'Name', value: 'Value'}]}";
     private static final MessageMetadata MESSAGE_METADATA = MessageMetadata.of(METADATA);
+    public static final String TEST_TYPE = "TEST_TYPE";
 
     private final Set<MessageSerializer> serializers = Set.of(new StubMessageSerializer());
     private final MessageFactory messageFactory = new MessageFactory(serializers);
 
     @Test
-    void initialization_when() {
+    void whenDuplicatedSerializersAreRegisteredThenAnExceptionIsThrown() {
         // given
         Set<MessageSerializer> serializers = Set.of(new StubMessageSerializer(), new StubMessageSerializer());
 
@@ -32,7 +33,7 @@ class MessageFactoryTest {
     }
 
     @Test
-    void initialization_when3() {
+    void whenRegisteredSerializerReturnsNullTypeThenAnExceptionIsThrown() {
         // given
         Set<MessageSerializer> serializers = Set.of(messageSerializerWithNullMessageType());
 
@@ -41,7 +42,7 @@ class MessageFactoryTest {
     }
 
     @Test
-    void initialization_when2() {
+    void whenCommandDeclaresAnUnknownTypeThenAnExceptionIsThrown() {
         // given
         SendMessageCommand command = () -> MessageType.of("NOT_SUPPORTED");
 
@@ -50,7 +51,19 @@ class MessageFactoryTest {
     }
 
     @Test
-    void initialization_when1() {
+    void whenMessageSerializerReturnsNullThenAnExceptionIsThrown() {
+        // given
+        SendMessageCommand command = () -> MessageType.of(TEST_TYPE);
+
+        // and
+        MessageFactory messageFactory = new MessageFactory(Set.of(messageSerializerWithNullSerializeMethod()));
+
+        // expected
+        assertThrows(NullSerializedMessageException.class, () -> messageFactory.create(command));
+    }
+
+    @Test
+    void whenValidCommandIsPassedThenMessageIsCreated() {
         // given
         StubSendMessageCommand command = StubSendMessageCommand.builder()
                                                                .content(CONTENT)
@@ -78,6 +91,21 @@ class MessageFactoryTest {
             @Override
             public MessageType getType() {
                 return null;
+            }
+        };
+    }
+
+    private MessageSerializer messageSerializerWithNullSerializeMethod() {
+        return new MessageSerializer() {
+
+            @Override
+            public Message serialize(SendMessageCommand sendMessageCommand) {
+                return null;
+            }
+
+            @Override
+            public MessageType getType() {
+                return MessageType.of(TEST_TYPE);
             }
         };
     }

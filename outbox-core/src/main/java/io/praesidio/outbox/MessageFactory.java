@@ -26,9 +26,10 @@ class MessageFactory {
     }
 
     Message create(SendMessageCommand command) {
-        return Optional.ofNullable(serializers.get(command.getType()))
-                       .map(serializer -> serializer.serialize(command))
-                       .orElseThrow(() -> new CannotFindMessageSerializer(command.getType()));
+        MessageSerializer messageSerializer =
+                Optional.ofNullable(serializers.get(command.getType()))
+                        .orElseThrow(() -> new CannotFindMessageSerializer(command.getType()));
+        return Optional.ofNullable(messageSerializer.serialize(command))
+                .orElseThrow(() -> new NullSerializedMessageException(command.getType()));
     }
-
 }
