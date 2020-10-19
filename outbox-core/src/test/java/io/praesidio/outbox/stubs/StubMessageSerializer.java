@@ -15,7 +15,7 @@ import static io.praesidio.outbox.stubs.StubImplementationConstants.MESSAGE_TYPE
 public class StubMessageSerializer implements MessageSerializer {
 
     @Override
-    public Message convert(SendMessageCommand sendMessageCommand) {
+    public Message serialize(SendMessageCommand sendMessageCommand) {
         StubSendMessageCommand command = (StubSendMessageCommand) sendMessageCommand;
         return Message.builder()
                       .id(MessageId.of(UUID.randomUUID()))
@@ -23,15 +23,6 @@ public class StubMessageSerializer implements MessageSerializer {
                       .content(MessageContent.of(command.getContent()))
                       .type(getType())
                       .build();
-    }
-
-    @Override
-    public SendMessageCommand convert(Message message) {
-        return StubSendMessageCommand
-                .builder()
-                .content(message.getContent().getValue())
-                .metadata(message.getMetadata().getValue())
-                .build();
     }
 
     @Override

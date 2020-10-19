@@ -71,7 +71,7 @@ class MessageFactoryTest {
         return new MessageSerializer() {
 
             @Override
-            public Message convert(SendMessageCommand sendMessageCommand) {
+            public Message serialize(SendMessageCommand sendMessageCommand) {
                 return null;
             }
 
