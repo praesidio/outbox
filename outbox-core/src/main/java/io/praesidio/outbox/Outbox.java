@@ -8,16 +8,21 @@ public class Outbox {
 
     private final MessageFactory messageFactory;
     private final MessageRepository messageRepository;
+    private final TransactionValidator transactionValidator;
 
     public Outbox(@NonNull MessageRepository messageRepository,
-                  @NonNull Collection<MessageSerializer> serializers) {
+                  @NonNull Collection<MessageSerializer> serializers,
+                  @NonNull TransactionValidator transactionValidator) {
         this.messageRepository = messageRepository;
+        this.transactionValidator = transactionValidator;
         this.messageFactory = new MessageFactory(serializers);
     }
 
     public void send(SendMessageCommand command) {
+        if (!transactionValidator.isTransactionActive()) {
+            throw new TransactionRequiredException();
+        }
         Message message = messageFactory.create(command);
-        // FIXME #10 make sure this is always invoked inside a transaction
         messageRepository.save(message);
     }
 }
