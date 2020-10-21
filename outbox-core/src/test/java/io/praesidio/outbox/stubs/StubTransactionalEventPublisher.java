@@ -1,17 +1,17 @@
 package io.praesidio.outbox.stubs;
 
-import io.praesidio.outbox.InternalEventPublisher;
+import io.praesidio.outbox.TransactionalEventPublisher;
 import io.praesidio.outbox.values.MessageId;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class StubInternalEventPublisher implements InternalEventPublisher {
+public class StubTransactionalEventPublisher implements TransactionalEventPublisher {
 
     private final List<MessageId> messageIds = new ArrayList<>();
 
     @Override
-    public void messageReadyForProcessingAfterCommit(MessageId messageId) {
+    public void processAfterCommit(MessageId messageId) {
         messageIds.add(messageId);
     }
 

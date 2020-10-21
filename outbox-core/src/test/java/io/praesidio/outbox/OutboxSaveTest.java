@@ -13,7 +13,7 @@ class OutboxSaveTest {
     private static final String CONTENT = "test content";
     private static final String METADATA = "test metadata";
     private final StubMessageRepository repository = new StubMessageRepository();
-    private final StubInternalEventPublisher internalEventPublisher = new StubInternalEventPublisher();
+    private final StubTransactionalEventPublisher internalEventPublisher = new StubTransactionalEventPublisher();
 
     @Test
     void whenTransactionIsNotActiveThenExceptionIsThrown() {
