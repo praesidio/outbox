@@ -1,7 +1,7 @@
 package io.praesidio.outbox.stubs;
 
 import io.praesidio.outbox.Message;
-import io.praesidio.outbox.MessageRepository;
+import io.praesidio.outbox.spi.MessageRepository;
 import io.praesidio.outbox.values.MessageId;
 import lombok.Getter;
 

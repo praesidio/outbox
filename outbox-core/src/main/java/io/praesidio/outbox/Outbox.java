@@ -1,5 +1,6 @@
 package io.praesidio.outbox;
 
+import io.praesidio.outbox.spi.*;
 import lombok.NonNull;
 
 import java.util.Collection;

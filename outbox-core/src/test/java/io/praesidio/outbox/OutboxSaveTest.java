@@ -1,5 +1,6 @@
 package io.praesidio.outbox;
 
+import io.praesidio.outbox.spi.SendMessageCommand;
 import io.praesidio.outbox.stubs.*;
 import io.praesidio.outbox.values.MessageId;
 import org.junit.jupiter.api.Test;

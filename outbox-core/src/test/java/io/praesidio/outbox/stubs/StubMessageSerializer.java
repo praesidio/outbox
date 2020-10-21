@@ -1,8 +1,8 @@
 package io.praesidio.outbox.stubs;
 
 import io.praesidio.outbox.Message;
-import io.praesidio.outbox.MessageSerializer;
-import io.praesidio.outbox.SendMessageCommand;
+import io.praesidio.outbox.spi.MessageSerializer;
+import io.praesidio.outbox.spi.SendMessageCommand;
 import io.praesidio.outbox.values.MessageContent;
 import io.praesidio.outbox.values.MessageId;
 import io.praesidio.outbox.values.MessageMetadata;

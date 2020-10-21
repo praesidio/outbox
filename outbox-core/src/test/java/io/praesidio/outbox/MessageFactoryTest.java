@@ -1,5 +1,7 @@
 package io.praesidio.outbox;
 
+import io.praesidio.outbox.spi.MessageSerializer;
+import io.praesidio.outbox.spi.SendMessageCommand;
 import io.praesidio.outbox.stubs.StubImplementationConstants;
 import io.praesidio.outbox.stubs.StubMessageSerializer;
 import io.praesidio.outbox.stubs.StubSendMessageCommand;

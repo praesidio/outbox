@@ -1,5 +1,9 @@
 package io.praesidio.outbox;
 
+import io.praesidio.outbox.spi.MessageRelayProvider;
+import io.praesidio.outbox.spi.MessageRepository;
+import io.praesidio.outbox.spi.MessageSerializer;
+import io.praesidio.outbox.spi.TransactionValidator;
 import io.praesidio.outbox.values.MessageType;
 
 import java.util.Collection;
@@ -9,7 +13,7 @@ import java.util.Optional;
 import static java.util.function.Function.identity;
 import static java.util.stream.Collectors.toMap;
 
-public class MessageRelay {
+class MessageRelay {
 
     private final MessageRepository messageRepository;
     private final Map<MessageType, MessageRelayProvider> messageRelayProviders;
