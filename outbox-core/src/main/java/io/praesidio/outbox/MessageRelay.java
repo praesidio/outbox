@@ -16,15 +16,18 @@ public class MessageRelay {
     private final MessageRepository messageRepository;
     private final Map<MessageType, MessageRelayProvider> messageRelayProviders;
     private final Map<MessageType, MessageSerializer> messageSerializers;
+    private final TransactionValidator transactionValidator;
 
     public MessageRelay(
             MessageRepository messageRepository,
             Collection<MessageRelayProvider> messageRelayProviders,
-            Collection<MessageSerializer> messageSerializers
+            Collection<MessageSerializer> messageSerializers,
+            TransactionValidator transactionValidator
     ) {
         this.messageRepository = messageRepository;
         this.messageRelayProviders = messageRelayProviders.stream().collect(toMap(MessageRelayProvider::getType, identity()));
         this.messageSerializers = messageSerializers.stream().collect(toMap(MessageSerializer::getType, identity()));
+        this.transactionValidator = transactionValidator;
     }
 
     public void relayMessages() {
@@ -34,7 +37,9 @@ public class MessageRelay {
     private void relay(Message message) {
         MessageRelayProvider messageRelayProvider = getMessageRelayProvider(message);
         messageRelayProvider.relay(message);
-        // FIXME #10 should this happen in transaction?
+        if (!transactionValidator.isTransactionActive()) {
+            throw new TransactionRequiredException();
+        }
         messageRepository.markAsSent(message.getId());
     }
 
