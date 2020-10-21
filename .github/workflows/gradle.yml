@@ -28,8 +28,9 @@ jobs:
         uses: actions/download-artifact@v2
         with:
           name: outbox-core-code-coverage
+          path: 'core-test.exec'
       - name: Run codacy-coverage-reporter
         uses: codacy/codacy-coverage-reporter-action@master
         with:
           project-token: ${{ secrets.CODACY_PROJECT_TOKEN }}
-          coverage-reports: 'outbox-core/build/jacoco/test.exec'
+          coverage-reports: 'core-test.exec'
