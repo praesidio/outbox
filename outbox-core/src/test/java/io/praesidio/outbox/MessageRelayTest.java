@@ -17,11 +17,6 @@ public class MessageRelayTest {
     private final StubMessageRepository stubMessageRepository = new StubMessageRepository();
     private final StubMessageSerializer stubMessageSerializer = new StubMessageSerializer();
     private final StubMessageRelayProvider stubMessageRelayProvider = new StubMessageRelayProvider();
-    private final MessageRelay messageRelay = new MessageRelay(
-            stubMessageRepository,
-            Collections.singleton(stubMessageRelayProvider),
-            Collections.singleton(stubMessageSerializer)
-    );
 
     @Test
     public void whenDuplicatedSerializersAreRegisteredThenAnExceptionIsThrown() {
@@ -30,7 +25,8 @@ public class MessageRelayTest {
                 () -> new MessageRelay(
                         stubMessageRepository,
                         Collections.singleton(stubMessageRelayProvider),
-                        Arrays.asList(stubMessageSerializer, stubMessageSerializer)
+                        Arrays.asList(stubMessageSerializer, stubMessageSerializer),
+                        () -> true
                 )
         );
     }
@@ -42,7 +38,8 @@ public class MessageRelayTest {
                 () -> new MessageRelay(
                         stubMessageRepository,
                         Arrays.asList(stubMessageRelayProvider, stubMessageRelayProvider),
-                        Collections.singleton(stubMessageSerializer)
+                        Collections.singleton(stubMessageSerializer),
+                        () -> true
                 )
         );
     }
@@ -58,7 +55,7 @@ public class MessageRelayTest {
         stubMessageRepository.save(serializedMessage);
 
         // when
-        messageRelay.relayMessages();
+        createMessageRelay(true).relayMessages();
 
         // then
         assertEquals(1, stubMessageRelayProvider.getMessages().size());
@@ -75,11 +72,33 @@ public class MessageRelayTest {
         stubMessageRepository.save(stubMessageSerializer.serialize(command));
 
         // when
-        messageRelay.relayMessages();
+        createMessageRelay(true).relayMessages();
 
         // then
         assertEquals(1, stubMessageRepository.getSentMessages().size());
         Message sentMessage = stubMessageRepository.getSentMessages().iterator().next();
         assertEquals(command.getContent(), sentMessage.getContent().getValue());
+    }
+
+    @Test
+    public void whenMessageRelaySendsMessageWithoutAnActiveTransactionThenAnExceptionIsThrown() {
+        // given
+        StubSendMessageCommand command = StubSendMessageCommand.builder()
+                .content("Test content")
+                .metadata("Test metadata")
+                .build();
+        stubMessageRepository.save(stubMessageSerializer.serialize(command));
+
+        // expect
+        assertThrows(TransactionRequiredException.class, () -> createMessageRelay(false).relayMessages());
+    }
+
+    private MessageRelay createMessageRelay(boolean isTransactionActive) {
+        return new MessageRelay(
+                stubMessageRepository,
+                Collections.singleton(stubMessageRelayProvider),
+                Collections.singleton(stubMessageSerializer),
+                () -> isTransactionActive
+        );
     }
 }
