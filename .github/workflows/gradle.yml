@@ -25,9 +25,9 @@ jobs:
     steps:
       - uses: actions/checkout@master
       - name: Download outbox-core code coverage
-          uses: actions/download-artifact@v2
-          with:
-            name: outbox-core-code-coverage
+        uses: actions/download-artifact@v2
+        with:
+          name: outbox-core-code-coverage
       - name: Run codacy-coverage-reporter
         uses: codacy/codacy-coverage-reporter-action@master
         with:
