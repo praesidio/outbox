@@ -29,6 +29,8 @@ jobs:
         with:
           name: outbox-core-code-coverage
           path: 'outbox-core.xml'
+      - name: Display structure of downloaded files
+        run: ls -R
       - name: Run codacy-coverage-reporter
         uses: codacy/codacy-coverage-reporter-action@master
         with:
