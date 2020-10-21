@@ -5,8 +5,6 @@ import io.praesidio.outbox.values.MessageType;
 import java.util.Collection;
 import java.util.Map;
 import java.util.Optional;
-import java.util.function.Function;
-import java.util.stream.Collectors;
 
 import static java.util.function.Function.identity;
 import static java.util.stream.Collectors.toMap;
@@ -36,11 +34,6 @@ public class MessageRelay {
         messageRelayProvider.relay(message);
         // FIXME #10 should this happen in transaction?
         messageRepository.markAsSent(message.getId());
-    }
-
-    private MessageSerializer getMessageSerializer(Message message) {
-        return Optional.ofNullable(messageSerializers.get(message.getType()))
-                .orElseThrow(() -> new CannotFindMessageSerializer(message.getType()));
     }
 
     private MessageRelayProvider getMessageRelayProvider(Message message) {
