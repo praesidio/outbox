@@ -35,11 +35,11 @@ public class MessageRelay {
     }
 
     private void relay(Message message) {
-        MessageRelayProvider messageRelayProvider = getMessageRelayProvider(message);
-        messageRelayProvider.relay(message);
         if (!transactionValidator.isTransactionActive()) {
             throw new TransactionRequiredException();
         }
+        MessageRelayProvider messageRelayProvider = getMessageRelayProvider(message);
+        messageRelayProvider.relay(message);
         messageRepository.markAsSent(message.getId());
     }
 
