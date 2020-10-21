@@ -4,9 +4,7 @@ on: [push]
 
 jobs:
   build:
-
     runs-on: ubuntu-latest
-
     steps:
     - uses: actions/checkout@v1
     - name: Set up JDK
@@ -15,3 +13,24 @@ jobs:
         java-version: 1.8
     - name: Build with Gradle
       run: ./gradlew build
+    - name: Upload outbox-core code coverage
+      uses: actions/upload-artifact@v2
+      with:
+        name: outbox-core-code-coverage
+        path: 'outbox-core/build/reports/jacoco/test/jacocoTestReport.xml'
+  codacy-coverage-reporter:
+    runs-on: ubuntu-latest
+    name: codacy-coverage-reporter
+    needs: build
+    steps:
+      - uses: actions/checkout@v1
+      - name: Download outbox-core code coverage
+        uses: actions/download-artifact@v2
+        with:
+          name: outbox-core-code-coverage
+          path: 'outbox-core'
+      - name: Run codacy-coverage-reporter
+        uses: codacy/codacy-coverage-reporter-action@master
+        with:
+          project-token: ${{ secrets.CODACY_PROJECT_TOKEN }}
+          coverage-reports: 'outbox-core/jacocoTestReport.xml'
