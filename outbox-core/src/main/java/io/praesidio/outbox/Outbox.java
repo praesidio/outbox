@@ -1,6 +1,10 @@
 package io.praesidio.outbox;
 
-import io.praesidio.outbox.spi.*;
+import io.praesidio.outbox.spi.MessageRepository;
+import io.praesidio.outbox.spi.MessageSerializer;
+import io.praesidio.outbox.spi.SendMessageCommand;
+import io.praesidio.outbox.spi.TransactionValidator;
+import io.praesidio.outbox.spi.TransactionalEventPublisher;
 import lombok.NonNull;
 
 import java.util.Collection;
