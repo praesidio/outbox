@@ -1,6 +1,7 @@
 plugins {
     `java-library`
     id("io.freefair.lombok") version "5.0.1"
+    jacoco
 }
 
 val junitVersion = "5.5.1"
@@ -17,6 +18,13 @@ dependencies {
 
 val test by tasks.getting(Test::class) {
     useJUnitPlatform()
+}
+
+tasks.test {
+    finalizedBy(tasks.jacocoTestReport)
+}
+tasks.jacocoTestReport {
+    dependsOn(tasks.test)
 }
 
 lombok {
