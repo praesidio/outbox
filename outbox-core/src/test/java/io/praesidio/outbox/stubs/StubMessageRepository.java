@@ -1,11 +1,17 @@
 package io.praesidio.outbox.stubs;
 
 import io.praesidio.outbox.Message;
-import io.praesidio.outbox.MessageRepository;
+import io.praesidio.outbox.spi.MessageRepository;
 import io.praesidio.outbox.values.MessageId;
 import lombok.Getter;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 public class StubMessageRepository implements MessageRepository {
 

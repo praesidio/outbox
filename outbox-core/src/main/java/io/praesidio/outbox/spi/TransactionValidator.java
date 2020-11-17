@@ -1,4 +1,4 @@
-package io.praesidio.outbox;
+package io.praesidio.outbox.spi;
 
 public interface TransactionValidator {
     boolean isTransactionActive();

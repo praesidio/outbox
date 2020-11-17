@@ -1,12 +1,19 @@
 package io.praesidio.outbox;
 
-import io.praesidio.outbox.stubs.*;
+import io.praesidio.outbox.spi.SendMessageCommand;
+import io.praesidio.outbox.stubs.StubImplementationConstants;
+import io.praesidio.outbox.stubs.StubMessageRepository;
+import io.praesidio.outbox.stubs.StubMessageSerializer;
+import io.praesidio.outbox.stubs.StubSendMessageCommand;
+import io.praesidio.outbox.stubs.StubTransactionalEventPublisher;
 import io.praesidio.outbox.values.MessageId;
 import org.junit.jupiter.api.Test;
 
 import java.util.Collections;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 class OutboxSaveTest {
 

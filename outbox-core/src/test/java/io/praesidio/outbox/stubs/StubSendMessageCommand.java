@@ -1,6 +1,6 @@
 package io.praesidio.outbox.stubs;
 
-import io.praesidio.outbox.SendMessageCommand;
+import io.praesidio.outbox.spi.SendMessageCommand;
 import io.praesidio.outbox.values.MessageType;
 import lombok.Builder;
 import lombok.Value;

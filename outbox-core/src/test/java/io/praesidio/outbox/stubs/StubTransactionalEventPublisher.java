@@ -1,6 +1,6 @@
 package io.praesidio.outbox.stubs;
 
-import io.praesidio.outbox.TransactionalEventPublisher;
+import io.praesidio.outbox.spi.TransactionalEventPublisher;
 import io.praesidio.outbox.values.MessageId;
 
 import java.util.ArrayList;

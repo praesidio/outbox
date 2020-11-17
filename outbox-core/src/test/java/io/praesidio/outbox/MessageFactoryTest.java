@@ -1,5 +1,7 @@
 package io.praesidio.outbox;
 
+import io.praesidio.outbox.spi.MessageSerializer;
+import io.praesidio.outbox.spi.SendMessageCommand;
 import io.praesidio.outbox.stubs.StubImplementationConstants;
 import io.praesidio.outbox.stubs.StubMessageSerializer;
 import io.praesidio.outbox.stubs.StubSendMessageCommand;
@@ -11,7 +13,9 @@ import org.junit.jupiter.api.Test;
 
 import java.util.Set;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 class MessageFactoryTest {
 
