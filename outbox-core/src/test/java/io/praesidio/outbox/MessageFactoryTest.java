@@ -94,6 +94,11 @@ class MessageFactoryTest {
             }
 
             @Override
+            public SendMessageCommand deserialize(Message message) {
+                return null;
+            }
+
+            @Override
             public MessageType getType() {
                 return null;
             }
@@ -105,6 +110,11 @@ class MessageFactoryTest {
 
             @Override
             public Message serialize(SendMessageCommand sendMessageCommand) {
+                return null;
+            }
+
+            @Override
+            public SendMessageCommand deserialize(Message message) {
                 return null;
             }
 

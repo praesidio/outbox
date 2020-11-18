@@ -58,8 +58,8 @@ public class MessageRelayTest {
         createMessageRelay(true).relayMessages();
 
         // then
-        assertEquals(1, stubMessageRelayProvider.getMessages().size());
-        assertEquals(serializedMessage, stubMessageRelayProvider.getMessages().iterator().next());
+        assertEquals(1, stubMessageRelayProvider.getCommands().size());
+        assertEquals(command, stubMessageRelayProvider.getCommands().iterator().next());
     }
 
     @Test

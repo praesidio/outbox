@@ -1,9 +1,8 @@
 package io.praesidio.outbox.spi;
 
-import io.praesidio.outbox.Message;
 import io.praesidio.outbox.values.MessageType;
 
-public interface MessageRelayProvider {
-    void relay(Message message);
+public interface MessageRelayProvider<T extends SendMessageCommand> {
+    void relay(T command);
     MessageType getType();
 }
