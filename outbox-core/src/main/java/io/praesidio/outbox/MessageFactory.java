@@ -18,10 +18,10 @@ class MessageFactory {
         serializers.forEach(serializer -> {
             MessageType messageType = serializer.getType();
             if (messageType == null) {
-                throw new NullMessageTypeException(serializer.getClass());
+                throw new MessageTypeNullException(serializer.getClass());
             }
             if (this.serializers.containsKey(messageType)) {
-                throw new SerializerDuplicationException(messageType);
+                throw new MessageSerializerDuplicatedException(messageType);
             }
             this.serializers.put(messageType, serializer);
         });
@@ -30,8 +30,8 @@ class MessageFactory {
     Message create(SendMessageCommand command) {
         MessageSerializer messageSerializer =
                 Optional.ofNullable(serializers.get(command.getType()))
-                        .orElseThrow(() -> new CannotFindMessageSerializer(command.getType()));
+                        .orElseThrow(() -> new MessageSerializerNotFoundException(command.getType()));
         return Optional.ofNullable(messageSerializer.serialize(command))
-                .orElseThrow(() -> new NullSerializedMessageException(command.getType()));
+                .orElseThrow(() -> new SerializedMessageNullException(command.getType()));
     }
 }
