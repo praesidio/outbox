@@ -34,7 +34,7 @@ class MessageFactoryTest {
         Set<MessageSerializer> serializers = Sets.of(new StubMessageSerializer(), new StubMessageSerializer());
 
         // expected
-        assertThrows(SerializerDuplicationException.class, () -> new MessageFactory(serializers));
+        assertThrows(MessageSerializerDuplicatedException.class, () -> new MessageFactory(serializers));
     }
 
     @Test
@@ -43,7 +43,7 @@ class MessageFactoryTest {
         Set<MessageSerializer> serializers = Sets.of(messageSerializerWithNullMessageType());
 
         // expected
-        assertThrows(NullMessageTypeException.class, () -> new MessageFactory(serializers));
+        assertThrows(MessageTypeNullException.class, () -> new MessageFactory(serializers));
     }
 
     @Test
@@ -52,7 +52,7 @@ class MessageFactoryTest {
         SendMessageCommand command = () -> MessageType.of("NOT_SUPPORTED");
 
         // expected
-        assertThrows(CannotFindMessageSerializer.class, () -> messageFactory.create(command));
+        assertThrows(MessageSerializerNotFoundException.class, () -> messageFactory.create(command));
     }
 
     @Test
@@ -64,7 +64,7 @@ class MessageFactoryTest {
         MessageFactory messageFactory = new MessageFactory(Sets.of(messageSerializerWithNullSerializeMethod()));
 
         // expected
-        assertThrows(NullSerializedMessageException.class, () -> messageFactory.create(command));
+        assertThrows(SerializedMessageNullException.class, () -> messageFactory.create(command));
     }
 
     @Test
