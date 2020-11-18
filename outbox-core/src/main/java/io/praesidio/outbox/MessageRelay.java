@@ -53,6 +53,6 @@ class MessageRelay {
 
     private MessageSerializer getMessageSerializer(Message message) {
         return Optional.ofNullable(messageSerializers.get(message.getType()))
-                .orElseThrow(() -> new CannotFindMessageSerializer(message.getType()));
+                .orElseThrow(() -> new MessageSerializerNotFoundException(message.getType()));
     }
 }
