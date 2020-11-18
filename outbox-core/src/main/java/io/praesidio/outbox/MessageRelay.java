@@ -48,7 +48,7 @@ class MessageRelay {
 
     private MessageRelayProvider getMessageRelayProvider(Message message) {
         return Optional.ofNullable(messageRelayProviders.get(message.getType()))
-                .orElseThrow(() -> new CannotFindMessageRelayProvider(message.getType()));
+                .orElseThrow(() -> new MessageRelayProviderNotFoundException(message.getType()));
     }
 
     private MessageSerializer getMessageSerializer(Message message) {
