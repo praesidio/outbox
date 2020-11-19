@@ -41,12 +41,18 @@ class MessageRelay {
             throw new TransactionRequiredException();
         }
         MessageRelayProvider messageRelayProvider = getMessageRelayProvider(message);
-        messageRelayProvider.relay(message);
+        MessageSerializer messageSerializer = getMessageSerializer(message);
+        messageRelayProvider.relay(messageSerializer.deserialize(message));
         messageRepository.markAsSent(message.getId());
     }
 
     private MessageRelayProvider getMessageRelayProvider(Message message) {
         return Optional.ofNullable(messageRelayProviders.get(message.getType()))
                 .orElseThrow(() -> new MessageRelayProviderNotFoundException(message.getType()));
+    }
+
+    private MessageSerializer getMessageSerializer(Message message) {
+        return Optional.ofNullable(messageSerializers.get(message.getType()))
+                .orElseThrow(() -> new MessageSerializerNotFoundException(message.getType()));
     }
 }
