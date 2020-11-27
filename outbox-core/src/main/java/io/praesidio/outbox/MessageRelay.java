@@ -2,8 +2,8 @@ package io.praesidio.outbox;
 
 import io.praesidio.outbox.spi.MessageRelayProvider;
 import io.praesidio.outbox.spi.MessageRepository;
-import io.praesidio.outbox.spi.MessageSerializer;
 import io.praesidio.outbox.spi.TransactionValidator;
+import io.praesidio.outbox.values.MessageId;
 import io.praesidio.outbox.values.MessageType;
 
 import java.util.Collection;
@@ -17,19 +17,21 @@ class MessageRelay {
 
     private final MessageRepository messageRepository;
     private final Map<MessageType, MessageRelayProvider> messageRelayProviders;
-    private final Map<MessageType, MessageSerializer> messageSerializers;
     private final TransactionValidator transactionValidator;
 
     public MessageRelay(
             MessageRepository messageRepository,
             Collection<MessageRelayProvider> messageRelayProviders,
-            Collection<MessageSerializer> messageSerializers,
             TransactionValidator transactionValidator
     ) {
         this.messageRepository = messageRepository;
         this.messageRelayProviders = messageRelayProviders.stream().collect(toMap(MessageRelayProvider::getType, identity()));
-        this.messageSerializers = messageSerializers.stream().collect(toMap(MessageSerializer::getType, identity()));
         this.transactionValidator = transactionValidator;
+    }
+
+    public void relayMessage(MessageId messageId) {
+        messageRepository.findById(messageId)
+                         .ifPresent(this::relay);
     }
 
     public void relayMessages() {
@@ -37,6 +39,7 @@ class MessageRelay {
     }
 
     private void relay(Message message) {
+        // FIXME possible double sending of a message - we should check if already sent
         if (!transactionValidator.isTransactionActive()) {
             throw new TransactionRequiredException();
         }

@@ -4,10 +4,12 @@ import io.praesidio.outbox.stubs.StubMessageRelayProvider;
 import io.praesidio.outbox.stubs.StubMessageRepository;
 import io.praesidio.outbox.stubs.StubMessageSerializer;
 import io.praesidio.outbox.stubs.StubSendMessageCommand;
+import io.praesidio.outbox.values.MessageId;
 import org.junit.jupiter.api.Test;
 
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -19,29 +21,46 @@ public class MessageRelayTest {
     private final StubMessageRelayProvider stubMessageRelayProvider = new StubMessageRelayProvider();
 
     @Test
-    public void whenDuplicatedSerializersAreRegisteredThenAnExceptionIsThrown() {
-        // expected
-        assertThrows(IllegalStateException.class,
-                () -> new MessageRelay(
-                        stubMessageRepository,
-                        Collections.singleton(stubMessageRelayProvider),
-                        Arrays.asList(stubMessageSerializer, stubMessageSerializer),
-                        () -> true
-                )
-        );
-    }
-
-    @Test
     public void whenDuplicatedMessageRelayProvidersAreRegisteredThenAnExceptionIsThrown() {
         // expected
         assertThrows(IllegalStateException.class,
                 () -> new MessageRelay(
                         stubMessageRepository,
                         Arrays.asList(stubMessageRelayProvider, stubMessageRelayProvider),
-                        Collections.singleton(stubMessageSerializer),
                         () -> true
                 )
         );
+    }
+
+    @Test
+    public void whenMessageIsInStoreIsItCanBeRelayedById() {
+        // given
+        StubSendMessageCommand command = StubSendMessageCommand.builder()
+                                                               .content("Test content")
+                                                               .metadata("Test metadata")
+                                                               .build();
+        Message serializedMessage = stubMessageSerializer.serialize(command);
+        stubMessageRepository.save(serializedMessage);
+
+        // when
+        createMessageRelay(true).relayMessage(serializedMessage.getId());
+
+        // then
+        assertEquals(1, stubMessageRelayProvider.getMessages().size());
+        assertEquals(serializedMessage, stubMessageRelayProvider.getMessages().iterator().next());
+    }
+
+    @Test
+    public void whenMessageIsNotIsNotThenItCannotBeRelayedById() {
+        // given
+        MessageId messageId = MessageId.of(UUID.randomUUID());
+
+
+        // when
+        createMessageRelay(true).relayMessage(messageId);
+
+        // then
+        assertEquals(0, stubMessageRelayProvider.getMessages().size());
     }
 
     @Test
@@ -97,7 +116,6 @@ public class MessageRelayTest {
         return new MessageRelay(
                 stubMessageRepository,
                 Collections.singleton(stubMessageRelayProvider),
-                Collections.singleton(stubMessageSerializer),
                 () -> isTransactionActive
         );
     }

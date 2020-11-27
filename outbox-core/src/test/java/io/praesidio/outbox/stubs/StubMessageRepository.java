@@ -5,13 +5,7 @@ import io.praesidio.outbox.spi.MessageRepository;
 import io.praesidio.outbox.values.MessageId;
 import lombok.Getter;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 public class StubMessageRepository implements MessageRepository {
 
@@ -37,6 +31,11 @@ public class StubMessageRepository implements MessageRepository {
                 .filter(m -> messageId.equals(m.getId())).findFirst()
                 .orElseThrow(() -> new MessageNotFoundException(messageId));
         sentMessages.add(message);
+    }
+
+    @Override
+    public Optional<Message> findById(MessageId messageId) {
+        return Optional.ofNullable(messages.get(messageId));
     }
 
     public Collection<Message> getAll() {

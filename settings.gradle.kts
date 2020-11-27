@@ -9,4 +9,4 @@
 
 rootProject.name = "outbox"
 
-include("outbox-core")
+include("outbox-core", "outbox-spring")
